@@ -9,12 +9,12 @@ const displayProduct = (data) => {
   data.forEach((product) => {
     const card = document.createElement("div");
     card.classList.add("card", "m-2");
-    
+    // console.log(product)
 
     card.innerHTML = `
           <div class="bookmark-icon">
-          <i class="fa-solid fa-bookmark"></i>
-          <i class="fa-regular fa-bookmark"></i>
+          <i onclick="handleRemoveBookMark(${product.id})" class="fa-solid fa-bookmark"></i>
+          <i  onclick="handleBookmark('${product.name}', '${product.id}', '${product.price}')" class="fa-regular fa-bookmark"></i>
         
 
 
@@ -39,6 +39,47 @@ const displayProduct = (data) => {
 
 // ! handle book mark
 
+const handleBookmark = (name, id, price) => {
+  // console.log({name, id, price})
+  let bookMarkArray = [];
+  
+  const productObj = {name, id, price, bookmark: true};
+  // console.log(productObj)
+  
+  
+  const previousBookmark = JSON.parse(localStorage.getItem('bookmark'));
+  // console.log(previousBookmark)
+  if (previousBookmark) {
+    // console.log("ache")
+    const isThisBookMarked = previousBookmark.find((pd) =>pd.id == id)
+    // console.log(isThisBookMarked)
+    if (isThisBookMarked) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Already Bookmarked!',
+        footer: '<a href="">Why do I have this issue?</a>'
+      })
+    }else {
+      bookMarkArray.push(...previousBookmark, productObj);
+      console.log(bookMarkArray)
+      localStorage.setItem('bookmark',JSON.stringify(bookMarkArray))
+    }
+  }else {
+    bookMarkArray.push(productObj)
+    // console.log("nai")
+    //? JSON.stringify(localStorage.setItem('bookmark',bookMarkArray)); wrong type mistake
+    localStorage.setItem('bookmark',JSON.stringify(bookMarkArray))
+  }
+}
 
+const handleRemoveBookMark = (id) => {
+  // console.log(id)
+  const previousBookmark = JSON.parse(localStorage.getItem('bookmark'))
+  // console.log(previousBookmark)
+  const restOfThen = previousBookmark.filter((product) => product.id  != id)
+  // console.log(restOfThen)
+  localStorage.setItem('bookmark', JSON.stringify(restOfThen))
+}
 
 loadProduct();
