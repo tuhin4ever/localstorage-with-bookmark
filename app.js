@@ -10,11 +10,22 @@ const displayProduct = (data) => {
     const card = document.createElement("div");
     card.classList.add("card", "m-2");
     // console.log(product)
-
+    const isBookmarked = checkBookmark(product.id)
     card.innerHTML = `
           <div class="bookmark-icon">
-          <i onclick="handleRemoveBookMark(${product.id})" class="fa-solid fa-bookmark"></i>
-          <i  onclick="handleBookmark('${product.name}', '${product.id}', '${product.price}')" class="fa-regular fa-bookmark"></i>
+          <i onclick="
+          ${isBookmarked 
+            ? `handleRemoveBookMark('${product.id}')`
+            : `handleBookmark('${product.name}', '${product.id}', '${product.price}')`
+          }" 
+          
+          class="${isBookmarked 
+            ? 'fa-solid fa-bookmark' 
+            : 'fa-regular fa-bookmark'
+          }"></i>
+
+
+
         
 
 
@@ -80,6 +91,18 @@ const handleRemoveBookMark = (id) => {
   const restOfThen = previousBookmark.filter((product) => product.id  != id)
   // console.log(restOfThen)
   localStorage.setItem('bookmark', JSON.stringify(restOfThen))
+}
+
+const checkBookmark = (id) => {
+  // console.log(id)
+  const previousBookmark = JSON.parse(localStorage.getItem('bookmark'))
+
+  const isBookmarked = previousBookmark?.find(p => p.id == id)
+  if (isBookmarked) {
+    return true;
+  }else {
+    return false;
+  }
 }
 
 loadProduct();
